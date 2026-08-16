@@ -44,13 +44,16 @@ class ConcurrentBookingTest {
     @BeforeEach
     void setUp() {
         tenant = tenantRepository.findById(UUID.fromString("11111111-1111-1111-1111-111111111111")).orElseThrow();
-        serviceId = UUID.fromString("11111111-2222-0000-0000-000000000001"); // Full Grooming (90 mins)
+        serviceId = UUID.fromString("11111111-2222-0000-0000-000000000001"); // Full Grooming
         staffId = UUID.fromString("11111111-3333-0000-0000-000000000001");   // John Doe
 
-        // Compute 10:00 AM local time in the tenant's actual timezone on a future Monday
-        ZoneId zone = ZoneId.of(tenant.getTimezone() != null ? tenant.getTimezone() : "UTC");
-        ZonedDateTime localMonday10Am = ZonedDateTime.of(2026, 9, 14, 10, 0, 0, 0, zone);
-        requestedSlot = localMonday10Am.toInstant();
+        // Clean existing test bookings to guarantee an unoccupied slot
+        bookingRepository.deleteAll();
+
+        // Target 10:00 AM on Monday in the tenant's configured timezone
+        ZoneId zone = ZoneId.of(tenant.getTimezone() != null ? tenant.getTimezone() : "America/New_York");
+        ZonedDateTime monday10Am = ZonedDateTime.of(2026, 9, 14, 10, 0, 0, 0, zone);
+        requestedSlot = monday10Am.toInstant();
     }
 
     @AfterEach
@@ -69,7 +72,7 @@ class ConcurrentBookingTest {
         AtomicInteger conflictCount = new AtomicInteger(0);
 
         Callable<Void> bookingTask = () -> {
-            startLatch.await(); // Synchronize both threads to fire at the exact same instant
+            startLatch.await(); // Hold threads until latch countdown to fire at the exact same instant
             TenantContext.setCurrentTenant(tenant);
             try {
                 bookingService.createBooking(new CreateBookingRequest(
@@ -91,7 +94,7 @@ class ConcurrentBookingTest {
         Future<Void> f1 = executor.submit(bookingTask);
         Future<Void> f2 = executor.submit(bookingTask);
 
-        startLatch.countDown(); // Fire both threads simultaneously
+        startLatch.countDown(); // Release both threads concurrently
 
         f1.get();
         f2.get();
