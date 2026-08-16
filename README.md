@@ -5,6 +5,16 @@ Production-grade multi-tenant service &amp; staff scheduling platform with dynam
 
 A production-grade SaaS administrative platform for pet-care businesses to manage services, staff rosters, recurring working schedules, and real-time appointment bookings with strict double-booking prevention.
 
+#### Start application using 
+```bash
+pet-booking-platform\start-app.bat
+```
+
+#### Stop application using
+```bash
+pet-booking-platform\stop-app.bat
+```
+
 ---
 
 ## 1. System Architecture & Technical Notes

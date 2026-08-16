@@ -40,11 +40,11 @@ echo.
 
 :: 4. Launch Spring Boot Backend in a separate window
 echo [3/5] Starting Spring Boot Backend API (port 8080)...
-start "PetCare - Backend (Port 8080)" cmd /k "cd /d "%~dp0backend" && mvn spring-boot:run"
+start "PetCare - Backend (Port 8080)" /D "%~dp0backend" cmd /k "mvn spring-boot:run"
 
-:: 5. Install Frontend Dependencies & Launch Vite Dev Server
-echo [4/5] Preparing Frontend (npm install & npm run dev on port 5173)...
-start "PetCare - Frontend (Port 5173)" cmd /k "cd /d "%~dp0frontend" && npm install && npm run dev"
+:: 5. Install Dependencies & Launch Vite Dev Server in frontend/ directory
+echo [4/5] Starting Frontend Dev Server (port 5173)...
+start "PetCare - Frontend (Port 5173)" /D "%~dp0frontend" cmd /k "npm install && npm run dev"
 
 :: 6. Open Browser
 echo [5/5] Launching Browser...
