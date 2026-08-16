@@ -42,13 +42,13 @@ echo.
 echo [3/5] Starting Spring Boot Backend API (port 8080)...
 start "PetCare - Backend (Port 8080)" cmd /k "cd /d "%~dp0backend" && mvn spring-boot:run"
 
-:: 5. Launch React / Vite Frontend in a separate window
-echo [4/5] Starting Vite Dev Server (port 5173)...
-start "PetCare - Frontend (Port 5173)" cmd /k "cd /d "%~dp0frontend" && npm run dev"
+:: 5. Install Frontend Dependencies & Launch Vite Dev Server
+echo [4/5] Preparing Frontend (npm install & npm run dev on port 5173)...
+start "PetCare - Frontend (Port 5173)" cmd /k "cd /d "%~dp0frontend" && npm install && npm run dev"
 
 :: 6. Open Browser
 echo [5/5] Launching Browser...
-timeout /t 5 /nobreak >nul
+timeout /t 7 /nobreak >nul
 start http://localhost:5173
 
 echo.
